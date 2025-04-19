@@ -426,4 +426,4 @@ The least squares method continues to be an indispensable tool in scientific res
 
 ---
 
-*This report was prepared by Prem Bahadur Katuwal for the PhD-level Numerical Analysis course. All diagrams were created using Python with matplotlib and numpy libraries.*
+*This report was prepared by Prem Bahadur Katuwal for the PHD-level Project Numerical Analysis course. All diagrams were created using Python with matplotlib and numpy libraries.*
