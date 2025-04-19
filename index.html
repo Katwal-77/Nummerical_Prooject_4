@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discovering the Law Behind Real-World Data Using the Least Squares Method</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; background: #f8f9fa; margin: 0; }
+        header, footer {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: #fff;
+            padding: 2.2em 0 1.5em 0;
+            text-align: center;
+            box-shadow: 0 6px 24px #1a298055;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+        .assignment-info {
+            color: #ffd700;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 1.4em;
+            margin-bottom: 0.2em;
+            text-shadow: 0 2px 8px #2226, 0 1px 0 #fff3;
+        }
+        .student-info {
+            color: #00ffe7;
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-top: 0.6em;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px #2226, 0 1px 0 #fff3;
+        }
+        h1 {
+            color: #fff;
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            font-size: 2.5em;
+            letter-spacing: 1.5px;
+            margin: 0.2em 0 0.1em 0;
+            line-height: 1.15;
+            font-weight: 800;
+            text-shadow: 0 4px 16px #2228, 0 1px 0 #fff3;
+        }
+        h2 {
+            color: #1a2980;
+            font-size: 2em;
+            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            font-weight: 700;
+            margin-bottom: 0.6em;
+        }
+        .subtitle {
+            color: #ffe082;
+            font-size: 1.25em;
+            margin-bottom: 0.9em;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px #2226, 0 1px 0 #fff3;
+        }
+        nav {
+            background: linear-gradient(90deg, #232526 0%, #1a2980 100%);
+            padding: 0.7em 0;
+            border-bottom: 3px solid #26d0ce;
+            margin-bottom: 1.5em;
+        }
+        nav ul { list-style: none; display: flex; justify-content: center; margin: 0; padding: 0; }
+        nav li { margin: 0 1.5em; }
+        nav a {
+            color: #ffe082;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.15em;
+            letter-spacing: 1px;
+            transition: color 0.2s, text-shadow 0.2s;
+            text-shadow: 0 1px 8px #1a298033;
+        }
+        nav a:hover {
+            color: #00ffe7;
+            text-shadow: 0 2px 16px #26d0ce77, 0 1px 0 #fff3;
+        }
+        main {
+            max-width: 950px;
+            margin: 2em auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px #1a298033;
+            padding: 2.5em 2em 2em 2em;
+        }
+        section { margin-bottom: 2.5em; }
+        .step {
+            background: linear-gradient(90deg, #e3eafc 70%, #d1f2f6 100%);
+            border-left: 7px solid #26d0ce;
+            padding: 1.3em 1.5em;
+            margin-bottom: 1.7em;
+            border-radius: 7px;
+            font-size: 1.1em;
+            color: #1a2980;
+            box-shadow: 0 2px 8px #1a298012;
+        }
+        .equation {
+            font-family: 'Consolas', monospace;
+            background: #f0f0f0;
+            padding: 0.5em 1.1em;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 0.7em 0;
+            color: #185a9d;
+            font-weight: 700;
+            font-size: 1.15em;
+            box-shadow: 0 1px 4px #2c536422;
+        }
+        .img-center {
+            display: block;
+            margin: 2em auto 1.5em auto;
+            max-width: 96%;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px #185a9d33;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2em 0;
+            font-size: 1.08em;
+            background: #fafdff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px #1a298012;
+        }
+        th, td { border: 1px solid #bbb; padding: 0.7em; text-align: center; }
+        th { background: #e8eaf6; font-weight: 700; color: #185a9d; font-size: 1.1em; }
+        .downloads-container { display: flex; flex-wrap: wrap; gap: 2em; }
+        .download-item {
+            flex: 1 1 250px;
+            background: #f7f7f7;
+            border-radius: 10px;
+            box-shadow: 0 1px 6px #26d0ce33;
+            padding: 1.3em;
+            margin-bottom: 1em;
+        }
+        .download-item ul { padding-left: 1.2em; }
+    </style>
+</head>
+<body>
+    <header style="position:relative;overflow:hidden;">
+        <svg style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;" viewBox="0 0 1200 200" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="bg-gradient" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#26d0ce"/>
+                    <stop offset="100%" stop-color="#1a2980"/>
+                </linearGradient>
+                <radialGradient id="circle-gradient" cx="80%" cy="10%" r="1.2">
+                    <stop offset="0%" stop-color="#ffd70088"/>
+                    <stop offset="100%" stop-color="#26d0ce00"/>
+                </radialGradient>
+            </defs>
+            <rect width="1200" height="200" fill="url(#bg-gradient)"/>
+            <circle cx="900" cy="60" r="120" fill="url(#circle-gradient)"/>
+            <circle cx="200" cy="150" r="100" fill="#00ffe733"/>
+        </svg>
+        <div style="position:relative;z-index:1;">
+            <div class="assignment-info" style="font-size:1.6em;letter-spacing:3px;text-shadow:0 2px 12px #1a298077,0 1px 0 #fff3;">Project 4 &mdash; Numerical Analysis</div>
+            <h1 style="font-size:2.9em;font-weight:900;margin:0.15em 0 0.13em 0;letter-spacing:2px;color:#fff;text-shadow:0 6px 24px #1a298099,0 1px 0 #fff3;">Discovering the Law Behind Real-World Data<br><span style="font-size:0.7em;font-weight:600;opacity:0.95;">Using the Least Squares Method</span></h1>
+            <p class="subtitle" style="font-size:1.3em;font-weight:600;color:#ffe082;text-shadow:0 2px 12px #1a298066,0 1px 0 #fff3;">Step-by-Step Analysis with Real Data, Visualizations, and Code</p>
+            <div class="student-info" style="color:#ffd700;font-size:1.15em;margin-top:0.7em;font-weight:700;text-shadow:0 2px 8px #2226,0 1px 0 #fff3;">
+                By: Prem Bahadur Katuwal <span style="font-weight:400;opacity:0.85;">(202424080129)</span>
+            </div>
+            <div class="student-info" style="color:#00ffe7;font-size:1.12em;margin-top:0.3em;font-weight:600;text-shadow:0 2px 8px #2226,0 1px 0 #fff3;">
+                University of Electronic Science and Technology of China (UESTC)
+            </div>
+            <div class="student-info" style="color:#fff;font-size:1.09em;margin-top:0.2em;font-weight:500;text-shadow:0 1px 8px #ffd70066,0 1px 0 #fff3;">
+                <span style="background:rgba(26,41,128,0.09);padding:0.18em 0.7em;border-radius:18px 6px 18px 6px;box-shadow:0 2px 8px #ffd70022;display:inline-block;">
+                    Submitted to: <b style="color:#ffd700;">Prof. Xi-Le Zhao</b> <span style="font-size:0.95em;opacity:0.85;">(2021-2024 World's Top 2% Scientists)</span>
+                </span>
+            </div>
+        </div>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#dataset">Dataset</a></li>
+            <li><a href="#visualization">Visualization</a></li>
+            <li><a href="#least-squares">Least Squares Method</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#residuals">Residual Analysis</a></li>
+            <li><a href="#downloads">Downloads</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <div class="step">
+                <p>
+                    In this assignment, we use the <b>least squares method</b> to discover the mathematical law behind real-world data. We analyze the relationship between <b>house size (sqft)</b> and <b>house price ($1000s)</b> using real-world-inspired data. The assignment demonstrates each step of the process, from data visualization to model fitting, evaluation, and interpretation, with creative visuals and interactive explanations.
+                </p>
+            </div>
+        </section>
+        <section id="dataset">
+            <h2>Dataset</h2>
+            <div class="step">
+                <p>We use the following dataset relating house size to house price:</p>
+                <table>
+                    <thead>
+                        <tr><th>House Size (sqft)</th><th>Price ($1000s)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>650</td><td>70</td></tr>
+                        <tr><td>785</td><td>85</td></tr>
+                        <tr><td>1200</td><td>120</td></tr>
+                        <tr><td>1500</td><td>145</td></tr>
+                        <tr><td>1850</td><td>180</td></tr>
+                        <tr><td>2100</td><td>210</td></tr>
+                        <tr><td>2300</td><td>230</td></tr>
+                        <tr><td>2700</td><td>265</td></tr>
+                        <tr><td>3000</td><td>300</td></tr>
+                        <tr><td>3500</td><td>355</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section id="visualization">
+            <h2>Data Visualization</h2>
+            <div class="step">
+                <p>
+                    The scatter plot below shows the positive correlation between house size and price, providing a visual intuition for why a linear model is appropriate.
+                </p>
+                <img src="scatter_plot.png" alt="Scatter Plot" class="img-center">
+            </div>
+        </section>
+        <section id="least-squares">
+            <h2>Applying the Least Squares Method</h2>
+            <div class="step">
+                <p>
+                    The <b>least squares method</b> fits a straight line to the data by minimizing the sum of squared vertical distances (residuals) between the observed and predicted values.<br>
+                    The linear model is:
+                </p>
+                <div class="equation">Price = m × Size + c</div>
+                <p>
+                    Using the method, we find:
+                    <ul>
+                        <li><b>Slope (m):</b> 0.0991</li>
+                        <li><b>Intercept (c):</b> 1.9382</li>
+                    </ul>
+                    <b>Discovered Law:</b> <span class="equation">Price = 0.10 × Size + 1.94 ($1000s)</span>
+                </p>
+                <img src="fitted_line.png" alt="Fitted Line" class="img-center">
+            </div>
+        </section>
+        <section id="results">
+            <h2>Results & Interpretation</h2>
+            <div class="step">
+                <ul>
+                    <li>The positive slope shows that larger houses tend to have higher prices.</li>
+                    <li>The intercept is the estimated price for a house of zero size (not meaningful physically, but required mathematically).</li>
+                    <li>The fitted line closely follows the data trend, indicating a strong linear relationship.</li>
+                </ul>
+            </div>
+            <div class="step">
+                <h3 style="margin-top:0;color:#185a9d;font-size:1.23em;">Detailed Results Table</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>House Size (sqft)</th>
+                            <th>Actual Price ($1000s)</th>
+                            <th>Predicted Price ($1000s)</th>
+                            <th>Residual ($1000s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>650</td><td>70</td><td>66.34</td><td>3.66</td></tr>
+                        <tr><td>785</td><td>85</td><td>79.72</td><td>5.28</td></tr>
+                        <tr><td>1200</td><td>120</td><td>120.84</td><td>-0.84</td></tr>
+                        <tr><td>1500</td><td>145</td><td>150.57</td><td>-5.57</td></tr>
+                        <tr><td>1850</td><td>180</td><td>185.25</td><td>-5.25</td></tr>
+                        <tr><td>2100</td><td>210</td><td>210.02</td><td>-0.02</td></tr>
+                        <tr><td>2300</td><td>230</td><td>229.84</td><td>0.16</td></tr>
+                        <tr><td>2700</td><td>265</td><td>269.47</td><td>-4.47</td></tr>
+                        <tr><td>3000</td><td>300</td><td>299.20</td><td>0.80</td></tr>
+                        <tr><td>3500</td><td>355</td><td>348.74</td><td>6.26</td></tr>
+                    </tbody>
+                </table>
+                <p style="margin-top:0.7em; color:#1a2980; font-size:1.07em;">
+                    This table shows, for each house size, the actual price, the price predicted by the least squares model, and the residual (difference). Most residuals are small, confirming the model's accuracy.
+                </p>
+            </div>
+        </section>
+        <section id="residuals">
+            <h2>Residual Analysis</h2>
+            <div class="step">
+                <p>
+                    Residuals are the differences between actual and predicted prices. Analyzing them helps us assess the fit quality.<br>
+                    The plot below shows the residuals for each data point:
+                </p>
+                <img src="residuals.png" alt="Residuals Plot" class="img-center">
+                <p>
+                    Most residuals are small and randomly scattered, confirming the appropriateness of the linear model.
+                </p>
+            </div>
+        </section>
+        <section id="downloads">
+            <h2>Downloads</h2>
+            <div class="downloads-container">
+                <div class="download-item">
+                    <h3>Code & Analysis</h3>
+                    <ul>
+                        <li><a href="least_squares_analysis.py" download>least_squares_analysis.py</a> - Python code for analysis</li>
+                        <li><a href="least_squares_report.md" download>Report (Markdown)</a></li>
+                        <li><a href="least_squares_report.docx" download>Report (Word Document)</a></li>
+                    </ul>
+                </div>
+                <div class="download-item">
+                    <h3>Visualizations</h3>
+                    <ul>
+                        <li><a href="scatter_plot.png" download>Scatter Plot</a></li>
+                        <li><a href="fitted_line.png" download>Fitted Line</a></li>
+                        <li><a href="residuals.png" download>Residuals Plot</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>Numerical Analysis Project: Least Squares Method &copy; 2025 - Prem Bahadur Katuwal (202424080129)</p>
+    </footer>
+</body>
+</html>

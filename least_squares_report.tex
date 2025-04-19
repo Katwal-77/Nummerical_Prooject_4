@@ -1,0 +1,629 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{enumitem}
+
+% Set up fancy headers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Prem Bahadur Katuwal}
+\fancyhead[R]{Numerical Analysis}
+\fancyfoot[C]{\thepage}
+
+% Title formatting
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    {\Huge\bfseries Discovering Laws Behind Real-World Data Using the Least Squares Method\par}
+    \vspace{1.5cm}
+    {\Large PhD-Level Assignment\par}
+    \vspace{1.5cm}
+    {\large\textbf{Name:} Prem Bahadur Katuwal\par}
+    {\large\textbf{Student ID:} 202424080129\par}
+    \vspace{1cm}
+    {\large\textbf{Subject:} Numerical Analysis\par}
+    \vspace{0.5cm}
+    {\large\textbf{Assignment:} Use Least Squares Method to Discover the Law Behind Real-World Data\par}
+    \vspace{0.5cm}
+    {\large\textbf{Date:} April 19, 2025\par}
+    \vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+The least squares method is a cornerstone technique in numerical analysis and statistics for discovering underlying patterns and relationships in real-world data. Developed by Carl Friedrich Gauss and Adrien-Marie Legendre in the early 19th century, this method has become indispensable across various scientific disciplines, from physics and engineering to economics and social sciences.
+
+At its core, the least squares method seeks to find the best-fitting curve or mathematical model for a given set of data points by minimizing the sum of the squares of the residuals (the differences between observed values and the values predicted by the model). This approach provides a powerful framework for:
+
+\begin{enumerate}
+    \item Discovering mathematical laws that govern physical phenomena
+    \item Making predictions based on observed data
+    \item Understanding relationships between variables
+    \item Testing hypotheses about underlying mechanisms
+\end{enumerate}
+
+This report demonstrates the application of the least squares method to several real-world datasets, detailing the mathematical foundations, implementation procedures, and interpretation of results. Through these examples, we will uncover the hidden laws that govern diverse phenomena and showcase the versatility and power of this numerical technique.
+
+\section{Theoretical Foundation}
+
+\subsection{Mathematical Formulation}
+
+The fundamental principle of the least squares method is to minimize the sum of squared differences between observed values and the values predicted by a model. Given a set of data points $(x_i, y_i)$ for $i = 1, 2, \ldots, n$, and a model function $f(x; \boldsymbol{\beta})$ with parameters $\boldsymbol{\beta}$, we aim to find the parameter values that minimize:
+
+\begin{equation}
+S(\boldsymbol{\beta}) = \sum_{i=1}^{n} [y_i - f(x_i; \boldsymbol{\beta})]^2
+\end{equation}
+
+This sum $S(\boldsymbol{\beta})$ is called the "sum of squared residuals" or "residual sum of squares" (RSS).
+
+\subsection{Matrix Approach}
+
+For linear models, the least squares problem can be elegantly formulated using matrix notation. If we have a linear model:
+
+\begin{equation}
+f(x; \boldsymbol{\beta}) = \beta_1 \phi_1(x) + \beta_2 \phi_2(x) + \ldots + \beta_m \phi_m(x)
+\end{equation}
+
+where $\phi_j(x)$ are known functions (e.g., $\phi_1(x) = x$, $\phi_2(x) = 1$ for a straight line), we can define:
+
+\begin{equation}
+\mathbf{X} = \begin{bmatrix} 
+\phi_1(x_1) & \phi_2(x_1) & \cdots & \phi_m(x_1) \\
+\phi_1(x_2) & \phi_2(x_2) & \cdots & \phi_m(x_2) \\
+\vdots & \vdots & \ddots & \vdots \\
+\phi_1(x_n) & \phi_2(x_n) & \cdots & \phi_m(x_n)
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\mathbf{y} = \begin{bmatrix} y_1 \\ y_2 \\ \vdots \\ y_n \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{\beta} = \begin{bmatrix} \beta_1 \\ \beta_2 \\ \vdots \\ \beta_m \end{bmatrix}
+\end{equation}
+
+The sum of squared residuals becomes:
+
+\begin{equation}
+S(\boldsymbol{\beta}) = \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 = (\mathbf{y} - \mathbf{X}\boldsymbol{\beta})^T(\mathbf{y} - \mathbf{X}\boldsymbol{\beta})
+\end{equation}
+
+\subsection{Normal Equations}
+
+To find the parameter values $\boldsymbol{\beta}$ that minimize $S(\boldsymbol{\beta})$, we differentiate with respect to $\boldsymbol{\beta}$ and set the result equal to zero:
+
+\begin{equation}
+\frac{\partial S(\boldsymbol{\beta})}{\partial \boldsymbol{\beta}} = -2\mathbf{X}^T(\mathbf{y} - \mathbf{X}\boldsymbol{\beta}) = \mathbf{0}
+\end{equation}
+
+This leads to the normal equations:
+
+\begin{equation}
+\mathbf{X}^T\mathbf{X}\boldsymbol{\beta} = \mathbf{X}^T\mathbf{y}
+\end{equation}
+
+The solution is:
+
+\begin{equation}
+\boldsymbol{\beta} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}
+\end{equation}
+
+assuming $\mathbf{X}^T\mathbf{X}$ is invertible. In practice, numerical methods like QR decomposition or Singular Value Decomposition (SVD) are often used to solve this system more stably.
+
+\section{Linear Least Squares}
+
+\subsection{Dataset Description}
+
+We begin with a classic example: the relationship between house size and price. This dataset represents a common application of regression analysis in real estate economics. The data points are as follows:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cc}
+\toprule
+House Size (sqft) & Price (\$1000s) \\
+\midrule
+650 & 70 \\
+785 & 85 \\
+1200 & 120 \\
+1500 & 145 \\
+1850 & 180 \\
+2100 & 210 \\
+2300 & 230 \\
+2700 & 265 \\
+3000 & 300 \\
+3500 & 355 \\
+\bottomrule
+\end{tabular}
+\caption{House size and price data}
+\label{tab:house_data}
+\end{table}
+
+\subsection{Visualizing the Data}
+
+Below is a scatter plot of the data, illustrating the positive correlation between house size and price:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{scatter_plot.png}
+\caption{Scatter plot of house size vs. price}
+\label{fig:scatter_plot}
+\end{figure}
+
+The plot suggests a strong linear relationship between these variables, making a linear model an appropriate choice.
+
+\subsection{Applying the Method}
+
+For a linear model, we seek a relationship of the form:
+
+\begin{equation}
+\text{Price} = m \times \text{Size} + c
+\end{equation}
+
+where $m$ is the slope and $c$ is the intercept.
+
+Using the matrix formulation described earlier:
+
+\begin{equation}
+\mathbf{X} = \begin{bmatrix} 
+650 & 1 \\
+785 & 1 \\
+1200 & 1 \\
+\vdots & \vdots \\
+3500 & 1
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\mathbf{y} = \begin{bmatrix} 70 \\ 85 \\ 120 \\ \vdots \\ 355 \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\boldsymbol{\beta} = \begin{bmatrix} m \\ c \end{bmatrix}
+\end{equation}
+
+Solving the normal equations:
+
+\begin{equation}
+\boldsymbol{\beta} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}
+\end{equation}
+
+The best-fit parameters obtained are:
+\begin{itemize}
+    \item \textbf{Slope ($m$):} 0.0991
+    \item \textbf{Intercept ($c$):} 1.9382
+\end{itemize}
+
+Thus, the discovered law is:
+
+\begin{center}
+\fbox{\textbf{Price = 0.0991 × Size + 1.9382 (\$1000s)}}
+\end{center}
+
+Or more simply:
+
+\begin{center}
+\fbox{\textbf{Price ≈ 0.10 × Size + 1.94 (\$1000s)}}
+\end{center}
+
+The fitted line is shown below:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{fitted_line.png}
+\caption{Linear least squares fit for house size vs. price}
+\label{fig:fitted_line}
+\end{figure}
+
+\subsection{Results and Interpretation}
+
+\begin{itemize}
+    \item The positive slope (0.0991) indicates that each additional square foot of house size corresponds to an increase of approximately \$99.1 in the house price.
+    \item The intercept (1.9382) represents the theoretical price when the house size is zero. While not meaningful in this context (as houses cannot have zero size), it serves as the y-intercept for our linear model.
+    \item The coefficient of determination (R²) is 0.9980, indicating that 99.8\% of the variance in house prices is explained by the house size alone.
+    \item The fitted line closely follows the trend of the data, suggesting that a linear relationship effectively captures the relationship between house size and price in this dataset.
+    \item This model can be used for price estimation: a 2000 sqft house would be estimated at approximately \$199,100 + \$1,938 = \$201,038.
+\end{itemize}
+
+\section{Polynomial Least Squares}
+
+\subsection{Mathematical Extension}
+
+While linear models are often sufficient, many real-world phenomena exhibit non-linear relationships. Polynomial regression extends the linear least squares method by using polynomial functions as the basis.
+
+For a polynomial of degree $p$, the model becomes:
+
+\begin{equation}
+f(x; \boldsymbol{\beta}) = \beta_0 + \beta_1 x + \beta_2 x^2 + \ldots + \beta_p x^p
+\end{equation}
+
+The matrix $\mathbf{X}$ is modified to include powers of $x$:
+
+\begin{equation}
+\mathbf{X} = \begin{bmatrix} 
+1 & x_1 & x_1^2 & \cdots & x_1^p \\
+1 & x_2 & x_2^2 & \cdots & x_2^p \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+1 & x_n & x_n^2 & \cdots & x_n^p
+\end{bmatrix}
+\end{equation}
+
+The solution procedure remains the same, using the normal equations.
+
+\subsection{Application to Temperature Data}
+
+Let's consider a dataset of average monthly temperatures in a northern hemisphere location:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cc}
+\toprule
+Month & Temperature (°C) \\
+\midrule
+1 & -5.2 \\
+2 & -3.8 \\
+3 & 2.4 \\
+4 & 8.7 \\
+5 & 14.5 \\
+6 & 19.2 \\
+7 & 21.8 \\
+8 & 20.9 \\
+9 & 16.3 \\
+10 & 10.1 \\
+11 & 4.2 \\
+12 & -2.5 \\
+\bottomrule
+\end{tabular}
+\caption{Monthly temperature data}
+\label{tab:temperature_data}
+\end{table}
+
+This temperature pattern clearly follows a cyclical pattern that cannot be adequately captured by a linear model. The data visualization confirms this:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{temperature_data.png}
+\caption{Monthly temperature data}
+\label{fig:temperature_data}
+\end{figure}
+
+We'll fit polynomials of different degrees to find the best representation. The comparison of different polynomial degrees shows how the fit improves with higher-degree polynomials:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{temperature_poly_comparison.png}
+\caption{Comparison of polynomial fits of different degrees}
+\label{fig:temperature_poly_comparison}
+\end{figure}
+
+For a 4th-degree polynomial, the discovered law is:
+
+\begin{equation}
+\text{Temperature} = 0.021x^4 - 0.595x^3 + 4.900x^2 - 9.137x - 0.417
+\end{equation}
+
+The fitted curve is shown below:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{temperature_fit.png}
+\caption{4th-degree polynomial fit for monthly temperatures}
+\label{fig:temperature_fit}
+\end{figure}
+
+\subsection{Model Selection}
+
+To determine the optimal polynomial degree, we can use metrics like the coefficient of determination (R²) and adjusted R², which account for model complexity:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{temperature_r2.png}
+\caption{R² and adjusted R² for different polynomial degrees}
+\label{fig:temperature_r2}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+\toprule
+Polynomial Degree & R² & Adjusted R² \\
+\midrule
+1 (linear) & 0.0766 & -0.1286 \\
+2 (quadratic) & 0.9267 & 0.8992 \\
+3 (cubic) & 0.9601 & 0.9372 \\
+4 (quartic) & 0.9984 & 0.9972 \\
+5 (quintic) & 0.9985 & 0.9967 \\
+6 (sextic) & 0.9985 & 0.9959 \\
+\bottomrule
+\end{tabular}
+\caption{Goodness of fit metrics for different polynomial degrees}
+\label{tab:polynomial_comparison}
+\end{table}
+
+The 4th-degree polynomial provides an excellent fit with an R² of 0.9984, and higher degrees offer diminishing returns. This suggests that a 4th-degree polynomial effectively captures the seasonal temperature variation.
+
+\section{Non-Linear Least Squares}
+
+\subsection{Exponential Growth Model}
+
+Some phenomena follow inherently non-linear patterns that cannot be linearized through polynomial transformations. Consider population growth data:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cc}
+\toprule
+Year & Population (billions) \\
+\midrule
+1900 & 1.65 \\
+1910 & 1.92 \\
+1920 & 2.22 \\
+1930 & 2.59 \\
+1940 & 2.85 \\
+1950 & 3.17 \\
+1960 & 3.65 \\
+1970 & 4.07 \\
+1980 & 4.45 \\
+1990 & 5.31 \\
+2000 & 6.12 \\
+2010 & 6.93 \\
+2020 & 7.79 \\
+\bottomrule
+\end{tabular}
+\caption{World population growth data}
+\label{tab:population_data}
+\end{table}
+
+The data visualization shows an accelerating growth pattern:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{population_data.png}
+\caption{World population growth data}
+\label{fig:population_data}
+\end{figure}
+
+An exponential model is appropriate for population growth:
+
+\begin{equation}
+P(t) = P_0 e^{rt}
+\end{equation}
+
+where $P_0$ is the initial population and $r$ is the growth rate.
+
+\subsection{Linearization vs. Direct Fitting}
+
+There are two main approaches to fitting exponential models:
+
+\begin{enumerate}
+    \item \textbf{Linearization}: Taking logarithms of both sides transforms the model into a linear form:
+    \begin{equation}
+    \ln(P(t)) = \ln(P_0) + rt
+    \end{equation}
+    
+    This can then be solved using linear least squares.
+
+    \item \textbf{Direct Non-Linear Fitting}: Using iterative methods to directly fit the exponential model to the data.
+\end{enumerate}
+
+Both approaches yield similar results for this dataset:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{population_growth.png}
+\caption{Exponential growth models for population data}
+\label{fig:population_growth}
+\end{figure}
+
+The discovered laws are:
+\begin{itemize}
+    \item \textbf{Linearized Method}: $P(t) = 1.6966 \times e^{0.0127t}$
+    \item \textbf{Direct Non-Linear Method}: $P(t) = 1.6848 \times e^{0.0128t}$
+\end{itemize}
+
+where $t$ is years since 1900.
+
+These models indicate a growth rate of approximately 1.27-1.28\% per year, with a doubling time of about 54 years. Using these models, we can project future population values:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+\toprule
+Year & Linearized Model (billions) & Non-Linear Model (billions) \\
+\midrule
+2030 & 8.82 & 8.86 \\
+2040 & 10.02 & 10.07 \\
+2050 & 11.37 & 11.44 \\
+2060 & 12.91 & 13.00 \\
+2070 & 14.65 & 14.77 \\
+\bottomrule
+\end{tabular}
+\caption{Population projections based on exponential growth models}
+\label{tab:population_projections}
+\end{table}
+
+\section{Advanced Analysis}
+
+\subsection{Residual Analysis}
+
+Residuals are the differences between observed values and values predicted by the model. Analyzing residuals helps assess the goodness of fit and validate model assumptions.
+
+For the house price model, the residuals are:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cccc}
+\toprule
+House Size (sqft) & Actual Price & Predicted Price & Residual \\
+\midrule
+650 & 70 & 66.34 & 3.66 \\
+785 & 85 & 79.72 & 5.28 \\
+1200 & 120 & 120.84 & -0.84 \\
+1500 & 145 & 150.57 & -5.57 \\
+1850 & 180 & 185.25 & -5.25 \\
+2100 & 210 & 210.02 & -0.02 \\
+2300 & 230 & 229.84 & 0.16 \\
+2700 & 265 & 269.47 & -4.47 \\
+3000 & 300 & 299.20 & 0.80 \\
+3500 & 355 & 348.74 & 6.26 \\
+\bottomrule
+\end{tabular}
+\caption{Residuals for the house price model}
+\label{tab:residuals}
+\end{table}
+
+The plot below shows the residuals for each data point:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{residuals.png}
+\caption{Residuals for the house price model}
+\label{fig:residuals}
+\end{figure}
+
+Key observations from the residual analysis:
+\begin{itemize}
+    \item The residuals are relatively small compared to the actual values, indicating a good fit.
+    \item The residuals appear randomly scattered around zero, with no obvious pattern, suggesting the linear model is appropriate.
+    \item There are no extreme outliers that might unduly influence the fit.
+\end{itemize}
+
+A more comprehensive residual analysis would include:
+\begin{enumerate}
+    \item \textbf{Normality test}: Checking if residuals follow a normal distribution
+    \item \textbf{Homoscedasticity}: Verifying constant variance across the range of predictors
+    \item \textbf{Autocorrelation}: Testing for independence of residuals
+\end{enumerate}
+
+\subsection{Confidence Intervals}
+
+Confidence intervals quantify the uncertainty in the estimated parameters and predictions. For the house price model, the 95\% confidence intervals for predictions are shown below:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{confidence_intervals.png}
+\caption{Least squares fit with 95\% confidence intervals}
+\label{fig:confidence_intervals}
+\end{figure}
+
+The gray shaded area represents the 95\% confidence interval for the predicted values. Note how the interval widens as we move away from the center of the data, reflecting increased uncertainty in predictions at the extremes.
+
+\subsection{Goodness of Fit Metrics}
+
+Several metrics help evaluate how well the model fits the data:
+
+\begin{enumerate}
+    \item \textbf{Coefficient of Determination (R²)}: Measures the proportion of variance explained by the model
+    \begin{itemize}
+        \item For the house price model: R² = 0.9980
+        \item This indicates that 99.80\% of the variance in house prices is explained by house size
+    \end{itemize}
+
+    \item \textbf{Root Mean Square Error (RMSE)}: Measures the average magnitude of residuals
+    \begin{itemize}
+        \item For the house price model: RMSE = 4.0041
+        \item This means predictions are off by about \$4,004 on average
+    \end{itemize}
+
+    \item \textbf{Mean Absolute Error (MAE)}: Average of absolute residuals
+    \begin{itemize}
+        \item For the house price model: MAE = 3.2308
+        \item This means predictions deviate by about \$3,231 on average
+    \end{itemize}
+\end{enumerate}
+
+\section{Comparison with Other Methods}
+
+While least squares is powerful, other methods may be more appropriate in certain situations:
+
+\begin{enumerate}
+    \item \textbf{Robust Regression}: Less sensitive to outliers
+    \begin{itemize}
+        \item Uses methods like Huber loss or Tukey's bisquare
+        \item Particularly useful when data contains outliers
+    \end{itemize}
+
+    \item \textbf{Ridge Regression}: Adds a penalty term to handle multicollinearity
+    \begin{itemize}
+        \item Minimizes $\sum_{i=1}^{n} [y_i - f(x_i; \boldsymbol{\beta})]^2 + \lambda\sum_{j=1}^{m} \beta_j^2$
+        \item Useful when predictors are highly correlated
+    \end{itemize}
+
+    \item \textbf{LASSO Regression}: Encourages sparse solutions
+    \begin{itemize}
+        \item Minimizes $\sum_{i=1}^{n} [y_i - f(x_i; \boldsymbol{\beta})]^2 + \lambda\sum_{j=1}^{m} |\beta_j|$
+        \item Useful for feature selection
+    \end{itemize}
+
+    \item \textbf{Orthogonal Distance Regression}: Accounts for errors in both dependent and independent variables
+    \begin{itemize}
+        \item Minimizes perpendicular distances from points to the fitted curve
+        \item Appropriate when both variables have measurement errors
+    \end{itemize}
+\end{enumerate}
+
+For our house price example, standard least squares is appropriate because:
+\begin{itemize}
+    \item The relationship appears strongly linear
+    \item There are no obvious outliers
+    \item We have a single predictor variable
+    \item The residuals are well-behaved
+\end{itemize}
+
+\section{Conclusion}
+
+The least squares method provides a powerful framework for discovering mathematical laws that govern real-world phenomena. Through this report, we have:
+
+\begin{enumerate}
+    \item Explored the theoretical foundations of the method, from its mathematical formulation to practical implementation
+    \item Applied linear least squares to uncover the relationship between house size and price
+    \item Extended the approach to polynomial fitting for cyclical temperature data
+    \item Demonstrated non-linear least squares for exponential population growth
+    \item Conducted advanced analysis through residuals, confidence intervals, and goodness-of-fit metrics
+    \item Compared least squares with alternative methods
+\end{enumerate}
+
+Key insights from our analysis:
+\begin{itemize}
+    \item The relationship between house size and price follows a linear law: Price ≈ 0.10 × Size + 1.94 (\$1000s)
+    \item Monthly temperatures follow a 4th-degree polynomial pattern, reflecting seasonal variations
+    \item Population growth follows an exponential law: P(t) = 1.69e\textsuperscript{0.013t}, indicating a constant growth rate
+\end{itemize}
+
+The least squares method continues to be an indispensable tool in scientific research, engineering, economics, and many other fields. Its ability to extract meaningful patterns from noisy data makes it essential for understanding complex systems and making predictions based on observed behavior.
+
+\section{References}
+
+\begin{enumerate}
+    \item Björck, Å. (1996). Numerical Methods for Least Squares Problems. Society for Industrial and Applied Mathematics.
+    \item Golub, G. H., \& Van Loan, C. F. (2013). Matrix Computations (4th ed.). Johns Hopkins University Press.
+    \item Lawson, C. L., \& Hanson, R. J. (1995). Solving Least Squares Problems. Society for Industrial and Applied Mathematics.
+    \item Nocedal, J., \& Wright, S. J. (2006). Numerical Optimization (2nd ed.). Springer.
+    \item Press, W. H., Teukolsky, S. A., Vetterling, W. T., \& Flannery, B. P. (2007). Numerical Recipes: The Art of Scientific Computing (3rd ed.). Cambridge University Press.
+    \item Wikipedia: Least Squares. \url{https://en.wikipedia.org/wiki/Least_squares}
+    \item NIST/SEMATECH e-Handbook of Statistical Methods. \url{https://www.itl.nist.gov/div898/handbook/}
+\end{enumerate}
+
+\end{document}
